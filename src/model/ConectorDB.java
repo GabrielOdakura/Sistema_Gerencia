@@ -16,7 +16,7 @@ public class ConectorDB {
     public void getConnection() {
         String url = "jdbc:mysql://localhost:3306/Gestão-Produtos";
         String usuario = "root";
-        String senha = "root";
+        String senha = "Louco123@";
 
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -155,7 +155,7 @@ public class ConectorDB {
         return null;
     }
 
-    public RetornoDescribe TabelaEmpresa(){
+    public DadosTabela TabelaEmpresa(){
         Vector<Vector<Object>> vectorDados = new Vector<>();
         Vector<String> vectorNomeColunas = new Vector<>();
         String query = "describe `gestão-produtos`.`Empresa`;";
@@ -189,10 +189,10 @@ public class ConectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RetornoDescribe(vectorDados,vectorNomeColunas);
+        return new DadosTabela(vectorDados,vectorNomeColunas);
     }
 
-    public RetornoDescribe TabelaEstoque(){
+    public DadosTabela TabelaEstoque(){
         Vector<Vector<Object>> vectorDados = new Vector<>();
         Vector<String> vectorNomeColunas = new Vector<>();
         String query = "describe `gestão-produtos`.`Estoque`;";
@@ -226,10 +226,10 @@ public class ConectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RetornoDescribe(vectorDados,vectorNomeColunas);
+        return new DadosTabela(vectorDados,vectorNomeColunas);
     }
 
-    public RetornoDescribe TabelaFuncionarios(){
+    public DadosTabela TabelaFuncionarios(){
         Vector<Vector<Object>> vectorDados = new Vector<>();
         Vector<String> vectorNomeColunas = new Vector<>();
         String query = "describe `gestão-produtos`.`Funcionarios`;";
@@ -263,10 +263,10 @@ public class ConectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RetornoDescribe(vectorDados,vectorNomeColunas);
+        return new DadosTabela(vectorDados,vectorNomeColunas);
     }
 
-    public RetornoDescribe TabelaLogin(){
+    public DadosTabela TabelaLogin(){
         Vector<Vector<Object>> vectorDados = new Vector<>();
         Vector<String> vectorNomeColunas = new Vector<>();
         String query = "describe `gestão-produtos`.`Login`;";
@@ -300,10 +300,10 @@ public class ConectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RetornoDescribe(vectorDados,vectorNomeColunas);
+        return new DadosTabela(vectorDados,vectorNomeColunas);
     }
 
-    public RetornoDescribe TabelaPedido(){
+    public DadosTabela TabelaPedido(){
         Vector<Vector<Object>> vectorDados = new Vector<>();
         Vector<String> vectorNomeColunas = new Vector<>();
         String query = "describe `gestão-produtos`.`Pedidos`;";
@@ -337,10 +337,10 @@ public class ConectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RetornoDescribe(vectorDados,vectorNomeColunas);
+        return new DadosTabela(vectorDados,vectorNomeColunas);
     }
 
-    public RetornoDescribe TabelaProduto(){
+    public DadosTabela TabelaProduto(){
         Vector<Vector<Object>> vectorDados = new Vector<>();
         Vector<String> vectorNomeColunas = new Vector<>();
         String query = "describe `gestão-produtos`.`Produtos`;";
@@ -374,9 +374,8 @@ public class ConectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new RetornoDescribe(vectorDados,vectorNomeColunas);
+        return new DadosTabela(vectorDados,vectorNomeColunas);
     }
-
    /*
    public static ArrayList<Empresa> InsertEmpresa(){
         String insertQuery = "Insert into `gestão-produtos`.`empresa`(`Empresa_id`,`Empresa_nome`) VALUES (\"1\",\"TechNova Solutions\"),(\"2\",\"GreenWave Industries\"),(\"3\",\"BlueSky Innovations\"),(\"4\",\"UrbanVista Architects\"),(\"5\",\"NextGen Dynamics\"),(\"6\",\"BrightFuture Investments\"),(\"7\",\"QuantumLeap Technologies\"),(\"8\",\"EcoSphere Enterprises\"),(\"9\",\"FutureLink Networks\"),(\"10\",\"Pinnacle Global\"),(\"11\",\"VistaCore Technologies\"),(\"12\",\"SilverLining Cloud Services\"),(\"13\",\"Zenith Financial Group\"),(\"14\",\"Harmony Wellness Solutions\"),(\"15\",\"AeroFlex Logistics\"),(\"16\",\"Solaris Energy Group\"),(\"17\",\"CrystalWave Technologies\"),(\"18\",\"NovaTerra Real Estate\"),(\"19\",\"PrimePath Consulting\"),(\"20\",\"InnovaTech Labs\");\n";

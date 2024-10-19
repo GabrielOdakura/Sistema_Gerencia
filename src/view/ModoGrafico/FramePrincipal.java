@@ -3,7 +3,7 @@ package view.ModoGrafico;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import model.ConectorDB;
-import model.identificadores.RetornoDescribe;
+import model.identificadores.DadosTabela;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -120,7 +120,7 @@ public class FramePrincipal {
                         "Versão 1.0", "Sobre", JOptionPane.INFORMATION_MESSAGE));
     }
 
-    public void TabelaFuncionario(RetornoDescribe retorno) {
+    public void TabelaFuncionario(DadosTabela retorno) {
         // Obtenção do JTabbedPane e inicialização da tabela
         JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
         JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);
@@ -204,7 +204,7 @@ public class FramePrincipal {
         });
     }
 
-    public void TabelaEmpresa(RetornoDescribe retorno) {
+    public void TabelaEmpresa(DadosTabela retorno) {
         // Obtenção do JTabbedPane e inicialização da tabela
         JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
         JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);
@@ -288,7 +288,7 @@ public class FramePrincipal {
         });
     }
 
-    public void TabelaEstoque(RetornoDescribe retorno) {
+    public void TabelaEstoque(DadosTabela retorno) {
         // Obtenção do JTabbedPane e inicialização da tabela
         JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
         JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);
@@ -372,7 +372,7 @@ public class FramePrincipal {
         });
     }
 
-    public void TabelaLogin(RetornoDescribe retorno) {
+    public void TabelaLogin(DadosTabela retorno) {
         // Obtenção do JTabbedPane e inicialização da tabela
         JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
         JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);
@@ -456,7 +456,7 @@ public class FramePrincipal {
         });
     }
 
-    public void TabelaPedido(RetornoDescribe retorno) {
+    public void TabelaPedido(DadosTabela retorno) {
         // Obtenção do JTabbedPane e inicialização da tabela
         JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
         JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);
@@ -540,7 +540,7 @@ public class FramePrincipal {
         });
     }
 
-    public void TabelaProduto(RetornoDescribe retorno) {
+    public void TabelaProduto(DadosTabela retorno) {
         // Obtenção do JTabbedPane e inicialização da tabela
         JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
         JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);

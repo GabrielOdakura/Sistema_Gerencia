@@ -3,7 +3,7 @@ package view.ModoGrafico;
 import model.ConectorDB;
 import model.identificadores.Funcionario;
 import model.identificadores.Produto;
-import model.identificadores.RetornoDescribe;
+import model.identificadores.DadosTabela;
 
 import javax.swing.*;
 import java.awt.*;

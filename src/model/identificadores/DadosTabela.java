@@ -3,11 +3,11 @@ package model.identificadores;
 import java.util.ArrayList;
 import java.util.Vector;
 
-public class RetornoDescribe {
+public class DadosTabela {
     public Vector<Vector<Object>> vectorDados;
     public Vector<String> vectorNomeColunas;
 
-    public RetornoDescribe(Vector<Vector<Object>> vectorDados, Vector<String> vectorNomeColunas) {
+    public DadosTabela(Vector<Vector<Object>> vectorDados, Vector<String> vectorNomeColunas) {
         this.vectorDados = vectorDados;
         this.vectorNomeColunas = vectorNomeColunas;
     }
