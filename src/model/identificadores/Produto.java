@@ -9,13 +9,16 @@ public class Produto implements IProdutos {
     private String categoria = "";
     private String descricao = "";
 
+    private double desconto;
+
     @Override
-    public void adicionarProduto(String nomeProduto, String idProduto, double preco, String categoria, String descricao) {
+    public void adicionarProduto(String nomeProduto, String idProduto, double preco, String categoria, String descricao,double desconto) {
         this.nome = nomeProduto;
         this.id = idProduto;
         this.preco = preco;
         this.categoria = categoria;
         this.descricao = descricao;
+        this.desconto = desconto;
     }
 
     @Override
@@ -50,6 +53,14 @@ public class Produto implements IProdutos {
 
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public double getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(double desconto) {
+        this.desconto = desconto;
     }
 
     public String getCategoria() {
