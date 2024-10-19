@@ -1,0 +1,525 @@
+package app;
+
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.border.EmptyBorder;
+import javax.swing.ImageIcon;
+
+public class app extends JPanel {
+    // Declaração de componentes como variáveis globais
+    JTextField textUsuario;
+    JPasswordField textSenha;
+    JButton buttonEntrar, buttonSair;
+    JCheckBox checkBoxLembrar;
+    JLabel linkEsqueceuSenha;
+
+    // Referência global para o JFrame principal
+    JFrame frame;
+
+    // Cria o painel principal de login
+    public JPanel renderizarPainelLogin() {
+        JPanel painel = new JPanel();
+        painel.setLayout(new BorderLayout());
+
+        // Criando o logotipo da empresa
+        JLabel logo = new JLabel(new ImageIcon("logoEmpresa.png"), SwingConstants.CENTER);
+        logo.setForeground(Color.WHITE);
+        logo.setBorder(new EmptyBorder(0, 0, 50, 0));
+
+        // Nome da empresa
+        JLabel nomeCompania = new JLabel("Sistema de Gerenciamento de Inventário", SwingConstants.CENTER);
+        nomeCompania.setFont(new Font("Arial", Font.BOLD, 18));
+        nomeCompania.setForeground(Color.BLACK);
+
+        // Painel personalizado com fundo degradê
+        JPanel panel = new GradientPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        // Organizando os itens na tela
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+
+        // Adicionando os componentes
+        adicionarComponentesLogin(panel, constraints, logo, nomeCompania);
+
+        // Adicionando o painel à janela principal
+        painel.add(panel, BorderLayout.CENTER); // Certificando-se de adicionar o painel no centro do BorderLayout
+        return painel;
+    }
+
+    //Criação da tela do telaPrograma
+    public JTabbedPane renderizarPainelPrograma() {
+
+        ImageIcon logoIcon = new ImageIcon("logoEmpresa.png"); // Seu ícone de marca d'água
+        WatermarkPanel gradientPanel = new WatermarkPanel(logoIcon); // Painel com marca d'água
+        gradientPanel.setLayout(new BorderLayout());
+
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        // Cria os painéis para as abas
+        JPanel arquivoPanel = createArquivoPanel();
+        JPanel funcionariosPanel = createFuncionariosPanel();
+        JPanel produtosPanel = createProdutosPanel();
+        JPanel pedidosPanel = createPedidosPanel();
+        //JPanel ajudaPanel = createAjudaPanel();
+
+        // Adiciona as abas ao JTabbedPane
+        tabbedPane.addTab("Arquivos", new WatermarkPanel(logoIcon), arquivoPanel);
+        tabbedPane.addTab("Funcionários", new WatermarkPanel(logoIcon), funcionariosPanel);
+        tabbedPane.addTab("Produtos", new WatermarkPanel(logoIcon), produtosPanel);
+        tabbedPane.addTab("Pedidos", new WatermarkPanel(logoIcon), pedidosPanel);
+        //tabbedPane.addTab("Ajuda", new WatermarkPanel(logoIcon), ajudaPanel);
+
+        // Adiciona o tabbedPane ao painel com marca d'água
+        gradientPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        // Adiciona o gradientPanel ao frame
+        frame.getContentPane().removeAll(); // Remove o painel anterior
+        frame.add(tabbedPane, BorderLayout.CENTER);
+
+        frame.revalidate(); // Revalida o frame para garantir a atualização da interface
+        frame.repaint(); // Repaint para garantir que o novo conteúdo seja renderizado
+
+        frame.add(gradientPanel, BorderLayout.CENTER);
+        frame.setVisible(true);
+
+        gradientPanel.setLayout(new BorderLayout());
+
+        // Adiciona o JTabbedPane ao centro
+        gradientPanel.add(tabbedPane, BorderLayout.CENTER);
+
+        return tabbedPane;
+    }
+
+    // Painel personalizado para marca d'água
+    class WatermarkPanel extends JPanel implements Icon {
+        private Image image;
+
+        public WatermarkPanel(ImageIcon icon) {
+            this.image = icon.getImage();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g.create();
+
+            // Define a transparência da imagem
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
+
+            // Desenha a imagem no centro do painel
+            int width = getWidth();
+            int height = getHeight();
+            int imgWidth = image.getWidth(this);
+            int imgHeight = image.getHeight(this);
+            //int x = (width - imgWidth) / 2;
+            //int y = (height - imgHeight) / 2;
+
+            // Desenha a imagem várias vezes para preencher todo o fundo
+            for (int i = 0; i < width; i += imgWidth) {
+                for (int j = 0; j < height; j += imgHeight) {
+                    g2d.drawImage(image, i, j, this);
+                }
+            }
+            g2d.dispose();
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+
+        }
+
+        @Override
+        public int getIconWidth() {
+            return 0;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return 0;
+        }
+    }
+
+
+    private JPanel createArquivoPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Configura o BoxLayout vertical
+
+        frame.setLocationRelativeTo(null); // Centraliza a janela
+        frame.setVisible(true);
+
+        // Centraliza horizontalmente os componentes
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalGlue());
+
+        JButton buttonVoltar = new JButton("Voltar ao Menu");
+        JButton buttonSair = new JButton("Sair");
+
+        // Centraliza os botões horizontalmente
+        buttonVoltar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonSair.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(buttonVoltar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonSair);
+
+        panel.add(Box.createVerticalGlue()); // Espaço rígido abaixo para ajudar na centralização
+
+        estilizarBotao(buttonVoltar);
+        estilizarBotao(buttonSair);
+
+        return panel;
+    }
+
+    private JPanel createFuncionariosPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Configura o BoxLayout vertical
+        // Centraliza horizontalmente os componentes
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalGlue());
+
+        JButton buttonCadastrar = new JButton("Cadastrar Funcionário");
+        JButton buttonAlterar = new JButton("Alterar Funcionário");
+        JButton buttonDesligar = new JButton("Desligar Funcionário");
+
+        buttonCadastrar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonAlterar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonDesligar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(buttonCadastrar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonAlterar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonDesligar);
+
+        panel.add(Box.createVerticalGlue()); // Espaço rígido abaixo para ajudar na centralização
+
+        estilizarBotao(buttonCadastrar);
+        estilizarBotao(buttonAlterar);
+        estilizarBotao(buttonDesligar);
+
+        return panel;
+    }
+
+    private JPanel createProdutosPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Configura o BoxLayout vertical
+        // Centraliza horizontalmente os componentes
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalGlue());
+
+        JButton buttonAdicionar = new JButton("Adicionar Produto");
+        JButton buttonAlterarEstoque = new JButton("Alterar Estoque");
+        JButton buttonAlterarPreco = new JButton("Alterar Preço");
+
+        buttonAdicionar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonAlterarEstoque.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonAlterarPreco.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(buttonAdicionar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonAlterarEstoque);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonAlterarPreco);
+
+        panel.add(Box.createVerticalGlue()); // Espaço rígido abaixo para ajudar na centralização
+
+        estilizarBotao(buttonAdicionar);
+        estilizarBotao(buttonAlterarEstoque);
+        estilizarBotao(buttonAlterarPreco);
+
+        return panel;
+    }
+
+    private JPanel createPedidosPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Configura o BoxLayout vertical
+        // Centraliza horizontalmente os componentes
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalGlue());
+
+        JButton buttonVerificar = new JButton("Verificar Disponibilidade");
+        JButton buttonRealizar = new JButton("Realizar Pedido");
+        JButton buttonEncerrar = new JButton("Encerrar Pedido");
+        JButton buttonAlterar = new JButton("Alterar Pedido");
+
+        buttonVerificar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonRealizar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonEncerrar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonAlterar.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        panel.add(buttonVerificar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonRealizar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonEncerrar);
+        panel.add(Box.createRigidArea(new Dimension(0, 50))); // Espaço entre os botões
+        panel.add(buttonAlterar);
+
+        panel.add(Box.createVerticalGlue()); // Espaço rígido abaixo para ajudar na centralização
+
+        estilizarBotao(buttonVerificar);
+        estilizarBotao(buttonRealizar);
+        estilizarBotao(buttonEncerrar);
+        estilizarBotao(buttonAlterar);
+
+        return panel;
+    }
+
+//    private JPanel createAjudaPanel() {
+//        JPanel panel = new JPanel();
+//        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Configura o BoxLayout vertical
+//        // Centraliza horizontalmente os componentes
+//        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        panel.add(Box.createVerticalGlue());
+//
+//        JButton buttonSobre = new JButton("Sobre");
+//
+//        buttonSobre.setAlignmentX(Component.CENTER_ALIGNMENT);
+//
+//        panel.add(buttonSobre);
+//        panel.add(Box.createVerticalGlue()); // Espaço rígido abaixo para ajudar na centralização
+//
+//        estilizarBotao(buttonSobre);
+//        return panel;
+//    }
+
+    private void estilizarBotao(JButton button) {
+        button.putClientProperty("JComponent.roundRect", true);
+        button.setContentAreaFilled(true);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setPreferredSize(new Dimension(200, 40)); // Define um tamanho preferido para os botões
+        button.setBackground(new Color(246, 246, 246)); // Azul escuro
+
+    }
+
+
+    // Adiciona os componentes ao painel de login
+    private void adicionarComponentesLogin(JPanel panel, GridBagConstraints constraints, JLabel logo, JLabel nomeCompania) {
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 2;
+        panel.add(logo, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 2;
+        panel.add(nomeCompania, constraints);
+        constraints.gridwidth = 1;
+
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        panel.add(new JLabel("Usuário:"), constraints);
+        constraints.gridx = 1;
+        textUsuario = new JTextField(20); // Inicializando o campo de texto
+        panel.add(textUsuario, constraints);
+        textUsuario.putClientProperty("JComponent.roundRect", true);
+
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        panel.add(new JLabel("Senha:"), constraints);
+        constraints.gridx = 1;
+        textSenha = new JPasswordField(20); // Inicializando o campo de senha
+        panel.add(textSenha, constraints);
+        textSenha.putClientProperty("JComponent.roundRect", true);
+
+
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        checkBoxLembrar = new JCheckBox("Lembrar_me");
+        panel.add(checkBoxLembrar, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 4;
+        linkEsqueceuSenha = new JLabel("Esqueceu a senha?");
+        linkEsqueceuSenha.setForeground(Color.BLUE.darker());  // Cor do link
+        linkEsqueceuSenha.setCursor(new Cursor(Cursor.HAND_CURSOR));  // Cursor de mão
+        linkEsqueceuSenha.setFont(new Font("Arial", Font.PLAIN, 12));
+        linkEsqueceuSenha.setHorizontalAlignment(SwingConstants.LEFT);
+        linkEsqueceuSenha.setBorder(BorderFactory.createEmptyBorder(0, 70, 0, 0));  // ajustar borda
+        panel.add(linkEsqueceuSenha, constraints);
+
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        buttonEntrar = new JButton("Entrar");
+        panel.add(buttonEntrar, constraints);
+
+        buttonEntrar.putClientProperty("JComponent.roundRect", true);
+        buttonEntrar.setContentAreaFilled(true);            // Garante que a área de conteúdo seja preenchida
+        buttonEntrar.setFocusPainted(false);                // Remove a borda de foco
+        buttonEntrar.setBorderPainted(false);               // Remove a borda padrão
+        buttonEntrar.setBackground(new Color(45, 117, 200)); //azul escuro
+
+        constraints.gridx = 1;
+        buttonSair = new JButton("Sair");
+        panel.add(buttonSair, constraints);
+
+        buttonSair.putClientProperty("JComponent.roundRect", true);
+        buttonSair.putClientProperty("JButton.arc", 200);
+        buttonSair.setContentAreaFilled(true);              // Garante que a área de conteúdo seja preenchida
+        buttonSair.setFocusPainted(false);                  // Remove a borda de foco
+        buttonSair.setBorderPainted(false);                 // Remove a borda padrão
+        buttonSair.setBackground(new Color(139, 181, 229)); // azul claro
+
+        add(panel);
+    }
+
+    // Configura os eventos de ação dos botões
+    private void configurarAcoes() {
+        // Listener para o botão Entrar
+        buttonEntrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String usuario = textUsuario.getText().trim();
+                String senha = new String(textSenha.getPassword()).trim();
+
+                if (usuario.isEmpty() || senha.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                } else if (usuario.equals("admin") && senha.equals("123")) {
+                    //login bem sucedido
+                    JOptionPane.showMessageDialog(null, "Login realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Substituir o painel de login pelo painel do sistema
+                    frame.getContentPane().removeAll(); // Remove o painel de login
+                    renderizarPainelPrograma();
+                    frame.revalidate(); // Revalida o frame para garantir a atualização da interface
+                    frame.repaint(); // Repaint para garantir que o novo conteúdo seja renderizado
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Usuário ou senha inválidos!", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // Listener para o botão Sair
+        buttonSair.addActionListener(e -> System.exit(0));
+
+        // Listener para o link "Esqueceu a senha?"
+        linkEsqueceuSenha.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JOptionPane.showMessageDialog(null, "Redefinir senha não está implementado.", "Informação", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                linkEsqueceuSenha.setText("<html><u>Esqueceu a senha?</u></html>"); // Adiciona o sublinhado quando o mouse passa por cima
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                linkEsqueceuSenha.setText("Esqueceu a senha?"); // Remove o sublinhado quando o mouse sai
+            }
+        });
+    }
+
+    // Configura os eventos dos itens de menu
+    private void configurarEventosMenu(JMenuItem novoUsuario, JMenuItem options, JMenuItem ajuda) {
+        // Listener para o menu Arquivo
+        novoUsuario.addActionListener(e -> JOptionPane.showMessageDialog(null, "O botão Novo Usuário não está implementado.", "Informação", JOptionPane.INFORMATION_MESSAGE));
+
+        // Listener para o menu Configurações
+        options.addActionListener(e -> JOptionPane.showMessageDialog(null, "O botão Opções não está implementado.", "Informação", JOptionPane.INFORMATION_MESSAGE));
+
+        // Listener para o menu Ajuda
+        ajuda.addActionListener(e -> JOptionPane.showMessageDialog(null, "Sistema de Gerenciamento de Inventário\nVersão 1.0", "Sobre", JOptionPane.INFORMATION_MESSAGE));
+    }
+
+    // Cria a barra de menus e configura os eventos
+    private JMenuBar criarMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        // Criando menus principais
+        JMenu menuArquivo = new JMenu("Arquivo");
+        JMenu menuConfig = new JMenu("Configurações");
+        JMenu menuAjuda = new JMenu("Ajuda");
+
+        // Adicionando os menus à barra
+        menuBar.add(menuArquivo);
+        menuBar.add(menuConfig);
+        menuBar.add(menuAjuda);
+
+        // Criando itens de menu
+        JMenuItem novoUsuario = new JMenuItem("Novo Usuario");
+        JMenuItem options = new JMenuItem("Opções");
+        JMenuItem ajuda = new JMenuItem("Sobre");
+
+        menuArquivo.add(novoUsuario);
+        menuConfig.add(options);
+        menuAjuda.add(ajuda);
+
+        configurarEventosMenu(novoUsuario, options, ajuda);
+
+        return menuBar;
+    }
+
+
+
+    private void inicializarJanela() {
+        // Cria o JFrame
+        frame = new JFrame("Sistema");
+
+        // Define o painel de login inicialmente
+        frame.add(renderizarPainelLogin());
+
+        // Cria e adiciona a barra de menus
+        JMenuBar menuBar = criarMenuBar();
+        frame.setJMenuBar(menuBar);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(700, 600);
+        frame.setLocationRelativeTo(null); // Centraliza a janela na tela
+        frame.setVisible(true);
+        frame.setResizable(false);
+
+        frame.setVisible(true);
+
+        // Configura as ações dos componentes
+        configurarAcoes();
+    }
+
+    // Painel personalizado para aplicar o fundo degradê
+    private class GradientPanel extends JPanel {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            int width = getWidth();
+            int height = getHeight();
+
+            GradientPaint gp = new GradientPaint(0, 0, new Color(107, 159, 223), 0, height, new Color(236, 236, 236));
+            g2d.setPaint(gp);
+            g2d.fillRect(0, 0, width, height);
+        }
+    }
+
+    // Método principal para inicializar a interface gráfica
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new FlatMacLightLaf());
+
+            UIManager.put("TabbedPane.background", new Color(74, 143, 211));
+            UIManager.put("TabbedPane.foreground", Color.BLACK);
+            UIManager.put("Panel.background", new Color(124, 173, 223));
+            UIManager.put("MenuBar.background", Color.BLACK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Executa o telaPrograma na thread de eventos do Swing
+        SwingUtilities.invokeLater(() -> {
+            app painel = new app();
+            painel.inicializarJanela();
+        });
+    }
+}
