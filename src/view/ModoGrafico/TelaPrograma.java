@@ -387,7 +387,7 @@ public class TelaPrograma extends JPanel{
 
                     // Cria e adiciona o produto
                     Produto produto = new Produto();
-                    produto.adicionarProduto(nomeProduto, idProduto, precoProduto, categoriaProduto, descricaoProduto);
+                    produto.adicionarProduto(nomeProduto, idProduto, precoProduto, categoriaProduto, descricaoProduto, 0);
 
                     JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!");
                 } else {

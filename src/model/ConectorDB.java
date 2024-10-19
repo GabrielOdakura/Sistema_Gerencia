@@ -100,7 +100,7 @@ public class ConectorDB {
 
                 double preco = Double.parseDouble(Produtos_preco);
 
-                produto.adicionarProduto(Produtos_nome,Produtos_id,preco,Produtos_categoria,Produtos_descricao);
+                produto.adicionarProduto(Produtos_nome,Produtos_id,preco,Produtos_categoria,Produtos_descricao, 0);
                 Produto_Dados.add(produto);
                 System.out.println(produto.toString());
             }

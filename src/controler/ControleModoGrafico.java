@@ -227,7 +227,7 @@ public class ControleModoGrafico {
 
                     // Cria e adiciona o produto
                     Produto produto = new Produto();
-                    produto.adicionarProduto(nomeProduto, idProduto, precoProduto, categoriaProduto, descricaoProduto);
+                    produto.adicionarProduto(nomeProduto, idProduto, precoProduto, categoriaProduto, descricaoProduto, 0);
                     produtos.add(produto);
 
                     JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!");
