@@ -1,6 +1,6 @@
 
 
-import controler.ControleModoTexto;
+import controler.ControleModoGrafico;
 import model.ConectorDB;
 import view.ModoGrafico.FramePrincipal;
 
@@ -38,11 +38,9 @@ public class App {
 
 		bsair.addActionListener(e -> System.exit(0));
 
-		ControleModoTexto start = new ControleModoTexto();
-		start.start();
-		System.exit(0);
+		//System.exit(0);
 
-// VERSAO ANTERIOR APP
+// VERSAO ANTERIOR AP
 //		FramePrincipal teste = new FramePrincipal();
 //
 //		JButton[] botoes = teste.getBotoes();

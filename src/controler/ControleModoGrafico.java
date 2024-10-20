@@ -8,16 +8,17 @@ import model.identificadores.Pedido;
 import model.identificadores.Produto;
 import view.ModoGrafico.TelaLogin;
 import view.ModoGrafico.TelaPrograma;
+import model.Modelos;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ControleModoGrafico {
-    private ArrayList<Funcionario> funcionarios = new ArrayList<>();
-    private ArrayList<Pedido> pedidos = new ArrayList<>();
-    private ArrayList<Produto> produtos = new ArrayList<>();
-    private ArrayList<Login> usuarios = new ArrayList<>();
+public class ControleModoGrafico extends Modelos {
+    private ArrayList<Funcionario> funcionarios = getFuncionarios();
+    private ArrayList<Pedido> pedidos = getPedidos();
+    private ArrayList<Produto> produtos = getProdutos();
+    private ArrayList<Login> usuarios = getUsuarios();
     private JFrame frame;
     private TelaLogin telaLogin;
     private TelaPrograma telaPrograma;
@@ -32,7 +33,6 @@ public class ControleModoGrafico {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
