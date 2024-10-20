@@ -155,7 +155,7 @@ public class ControleModoGrafico extends Modelos {
                 // Cria um novo objeto Funcionario e cadastra as informações
                 Funcionario funcionario = new Funcionario();
                 funcionario.cadastrarFuncionario(nomeFuncionario, cargoFuncionario, "DataAtual", idFuncionario);
-                funcionarios.add(funcionario);
+                addFuncionario(funcionario);
 
                 // Exibe mensagem de sucesso
                 JOptionPane.showMessageDialog(frame, "Funcionário cadastrado com sucesso!");
@@ -228,7 +228,7 @@ public class ControleModoGrafico extends Modelos {
                     // Cria e adiciona o produto
                     Produto produto = new Produto();
                     produto.adicionarProduto(nomeProduto, idProduto, precoProduto, categoriaProduto, descricaoProduto, 0);
-                    produtos.add(produto);
+                    addProduto(produto);
 
                     JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!");
                 } else {
@@ -310,7 +310,7 @@ public class ControleModoGrafico extends Modelos {
                     !dataEntrega.trim().isEmpty() && !descricao.trim().isEmpty()) {
                 Pedido novoPedido = new Pedido();
                 novoPedido.criarPedido(nomePedido, idPedido, dataPedido, dataEntrega, "produtos", descricao);
-                pedidos.add(novoPedido);
+                addPedido(novoPedido);
                 JOptionPane.showMessageDialog(null, "Pedido realizado com sucesso!",
                         "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             } else {
