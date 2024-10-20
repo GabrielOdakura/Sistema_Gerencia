@@ -15,8 +15,8 @@ public class ConectorDB {
     private Connection connection;
     public void getConnection() {
         String url = "jdbc:mysql://localhost:3306/Gestão-Produtos";
-        String usuario = "root";
-        String senha = "Louco123@";
+        String usuario = "Root";
+        String senha = "root";
 
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -124,10 +124,13 @@ public class ConectorDB {
                 String Pedidos_dataInicial = rs.getString("Pedidos_dataInicial");
                 String Pedidos_dataEntrega = rs.getString("Pedidos_dataEntrega");
                 String Pedidos_descricao = rs.getString("Pedidos_descricao");
+                String Pedidos_Empresa_id = rs.getString("Empresa_Empresa_id");
                 String Pedidos_Produtos_id = rs.getString("Produtos_Produtos_id");
+                String Pedidos_Funcionario_id = rs.getString("Funcionarios_Funcionarios_id");
 
 
-                pedido.criarPedido(Pedidos_nome,Pedidos_id,Pedidos_dataInicial,Pedidos_dataEntrega,Pedidos_Produtos_id,Pedidos_descricao);
+
+                pedido.criarPedido(Pedidos_nome,Pedidos_id,Pedidos_dataInicial,Pedidos_dataEntrega,Pedidos_Produtos_id,Pedidos_Empresa_id,Pedidos_Funcionario_id,Pedidos_descricao);
                 Pedido_Dados.add(pedido);
                 System.out.println(pedido.toString());
             }
