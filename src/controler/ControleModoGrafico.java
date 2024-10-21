@@ -1,64 +1,44 @@
 package controler;
 
-import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import model.ConectorDB;
 import model.identificadores.Funcionario;
 import model.identificadores.Login;
 import model.identificadores.Pedido;
 import model.identificadores.Produto;
+import view.ModoGrafico.FramePrincipal;
 import view.ModoGrafico.TelaLogin;
 import view.ModoGrafico.TelaPrograma;
 import model.Modelos;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
 
 public class ControleModoGrafico extends Modelos {
-    private ArrayList<Funcionario> funcionarios = getFuncionarios();
-    private ArrayList<Pedido> pedidos = getPedidos();
-    private ArrayList<Produto> produtos = getProdutos();
-    private ArrayList<Login> usuarios = getUsuarios();
-    private JFrame frame;
     private TelaLogin telaLogin;
     private TelaPrograma telaPrograma;
-    private ConectorDB conector = new ConectorDB();
+    private Modelos model;
+    private FramePrincipal frame;
 
     public ControleModoGrafico(){
-        try {
-            UIManager.setLookAndFeel(new FlatMacLightLaf());
-            UIManager.put("TabbedPane.background", new Color(74, 143, 211));
-            UIManager.put("Panel.background", new Color(124, 173, 223));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        model = new Modelos();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                frame = new JFrame("Sistema de Gerenciamento de Inventário");
-                TelaLogin telaLoginInstancia = new TelaLogin();
-                TelaPrograma telaProgramaInstancia = new TelaPrograma();
-                frame.setContentPane(telaLoginInstancia.renderizarPainelLogin(frame));
-                telaLoginInstancia.configurarAcoes(frame, telaLoginInstancia, telaProgramaInstancia);
-                telaProgramaInstancia.renderizarPainelPrograma(frame, telaLoginInstancia, telaProgramaInstancia);
+                frame = new FramePrincipal();
 
-                telaLogin = telaLoginInstancia;
-                telaPrograma = telaProgramaInstancia;
+                telaLogin = frame.getPainelLogin();
+                telaPrograma = frame.getPainelPrograma();
 
-                frame.setSize(700, 600);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-                setarBotoes();
-                atualizarDB();
+                setarBotoesPainelLogin();
+                setarBotoesPainelPrograma();
+                criarTabelas();
             }
         });
         
 
     }
 
-    private void setarBotoes() {
+
+
+    private void setarBotoesPainelLogin() {
         JButton buttonEntrar = telaLogin.getButtonEntrar();
         JButton buttonSair = telaLogin.getButtonSair();
 
@@ -73,15 +53,16 @@ public class ControleModoGrafico extends Modelos {
                 JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos.",
                         "Erro", JOptionPane.ERROR_MESSAGE);
             } else {
-                for(Login login : usuarios) {
+                for(Login login : model.getUsuarios()) {
                     if (login.verificarLogin(usuario, senha)) {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!",
                                 "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         naoEncontrado = false;
-                        frame.getContentPane().removeAll();
-                        telaPrograma.renderizarPainelPrograma(frame, telaLogin, telaPrograma);
-                        telaPrograma.gambiarra(frame);
-                        setarBotoes2();
+                        if(!frame.getPainelLogin().getStatusCheckBoxLembrar()) frame.getPainelLogin().limparCaixasLogin();
+                        frame.getPainelPrincipal().setLayer(frame.getPainelLogin(), JLayeredPane.DEFAULT_LAYER);
+                        frame.getPainelPrincipal().setLayer(frame.getPainelPrograma(), JLayeredPane.PALETTE_LAYER);
+                        frame.getPainelPrincipal().revalidate();
+                        frame.getPainelPrincipal().repaint();
                     }
                 }
                 if(naoEncontrado) JOptionPane.showMessageDialog(null, "Usuário ou senha inválidos!",
@@ -95,7 +76,7 @@ public class ControleModoGrafico extends Modelos {
 
     }
 
-    private void setarBotoes2(){
+    private void setarBotoesPainelPrograma(){
         JButton buttonVoltar = telaPrograma.getButtonVoltar();
         JButton buttonSair = telaPrograma.getButtonSair();
         JButton buttonCadastrarFuncionario = telaPrograma.getButtonCadastrarFuncionario();
@@ -109,44 +90,30 @@ public class ControleModoGrafico extends Modelos {
         JButton buttonEncerrarPedido = telaPrograma.getButtonEncerrarPedido();
         JButton buttonAlterarPedidos = telaPrograma.getButtonAlterarPedidos();
 
-        buttonVoltar.addActionListener(e -> {
+        buttonVoltar.addActionListener(e -> {//mexer aqui -------------------------------
             // Mensagem de feedback ao usuário
-            JOptionPane.showMessageDialog(frame, "Voltando ao menu principal...");
-
-            // Remove todos os componentes da tela atual
-            frame.getContentPane().removeAll();
-
-            // Renderiza a tela de login novamente
-//            JPanel painelLogin = login.renderizarPainelLogin(frame);
-//            frame.setContentPane(painelLogin);
-//            login.configurarAcoes(frame, login, telaPrograma); // Configura as ações da tela de login
-
-            // Ajusta o tamanho, a posição e o comportamento da janela
-            frame.setSize(700, 600);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLocationRelativeTo(null);
-
-            // Revalida e repinta o frame para garantir que a nova tela seja exibida corretamente
-            frame.revalidate();
-            frame.repaint();
+            JOptionPane.showMessageDialog(null, "Voltando ao menu principal...");
+            frame.getPainelPrincipal().setLayer(frame.getPainelPrograma(), JLayeredPane.DEFAULT_LAYER);
+            frame.getPainelPrincipal().setLayer(frame.getPainelLogin(), JLayeredPane.PALETTE_LAYER);
+            frame.getPainelPrincipal().revalidate();
+            frame.getPainelPrincipal().repaint();
         });
 
         // Listener para o botão "Sair"
         buttonSair.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(frame, "Tem certeza de que deseja sair?",
+            int confirm = JOptionPane.showConfirmDialog(null, "Tem certeza de que deseja sair?",
                     "Confirmação", JOptionPane.YES_NO_OPTION);
 
             if (confirm == JOptionPane.YES_OPTION) {
-                frame.dispose(); // Fecha a janela atual
                 System.exit(0);  // Fecha o programa
             }
         });
 
         buttonCadastrarFuncionario.addActionListener(e -> {
             // Exibe diálogos para capturar as informações do funcionário
-            String nomeFuncionario = JOptionPane.showInputDialog(frame, "Digite o nome do funcionário:");
-            String cargoFuncionario = JOptionPane.showInputDialog(frame, "Digite o cargo do funcionário:");
-            String idFuncionario = JOptionPane.showInputDialog(frame, "Digite o ID do funcionário:");
+            String nomeFuncionario = JOptionPane.showInputDialog(null, "Digite o nome do funcionário:");
+            String cargoFuncionario = JOptionPane.showInputDialog(null, "Digite o cargo do funcionário:");
+            String idFuncionario = JOptionPane.showInputDialog(null, "Digite o ID do funcionário:");
 
             // Verifica se todos os campos foram preenchidos corretamente
             if (nomeFuncionario != null && cargoFuncionario != null && idFuncionario != null &&
@@ -155,68 +122,68 @@ public class ControleModoGrafico extends Modelos {
                 // Cria um novo objeto Funcionario e cadastra as informações
                 Funcionario funcionario = new Funcionario();
                 funcionario.cadastrarFuncionario(nomeFuncionario, cargoFuncionario, "DataAtual", idFuncionario);
-                addFuncionario(funcionario);
+                model.addFuncionario(funcionario);
 
                 // Exibe mensagem de sucesso
-                JOptionPane.showMessageDialog(frame, "Funcionário cadastrado com sucesso!");
+                JOptionPane.showMessageDialog(null, "Funcionário cadastrado com sucesso!");
             } else {
                 // Exibe mensagem de erro caso algum campo não esteja preenchido
-                JOptionPane.showMessageDialog(frame, "Dados inválidos. Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Dados inválidos. Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         buttonAlterarFuncionario.addActionListener(e -> {
-            String idFuncionario = JOptionPane.showInputDialog(frame, "Digite o ID do funcionário a ser alterado:");
+            String idFuncionario = JOptionPane.showInputDialog(null, "Digite o ID do funcionário a ser alterado:");
 
             if (idFuncionario != null && !idFuncionario.trim().isEmpty()) {
 
-                for(Funcionario funcionario : funcionarios){
+                for(Funcionario funcionario : model.getFuncionarios()){
                     if(funcionario.getIdFuncionario().equals(idFuncionario)){
                         // Solicita novos dados para alteração
-                        String novoCargo = JOptionPane.showInputDialog(frame, "Digite o novo cargo do funcionário:");
+                        String novoCargo = JOptionPane.showInputDialog(null, "Digite o novo cargo do funcionário:");
 
                         if (novoCargo != null && !novoCargo.trim().isEmpty()) {
                             funcionario.setCargo(novoCargo);
                             funcionario.alterarFuncionario();
 
-                            JOptionPane.showMessageDialog(frame, "Funcionário alterado com sucesso!");
+                            JOptionPane.showMessageDialog(null, "Funcionário alterado com sucesso!");
                         } else {
-                            JOptionPane.showMessageDialog(frame, "Dados inválidos. Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Dados inválidos. Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }
             } else {
-                JOptionPane.showMessageDialog(frame, "ID do funcionário não pode ser vazio.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "ID do funcionário não pode ser vazio.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         buttonDesligarFuncionario.addActionListener(e -> {
-            String idFuncionario = JOptionPane.showInputDialog(frame, "Digite o ID do funcionário a ser desligado:");
+            String idFuncionario = JOptionPane.showInputDialog(null, "Digite o ID do funcionário a ser desligado:");
 
             if (idFuncionario != null && !idFuncionario.trim().isEmpty()) {
-                for(Funcionario funcionario : funcionarios) {
+                for(Funcionario funcionario : model.getFuncionarios()) {
                     if(funcionario.getIdFuncionario().equals(idFuncionario)){
-                        int confirm = JOptionPane.showConfirmDialog(frame, "Deseja realmente desligar o funcionário ID: "
+                        int confirm = JOptionPane.showConfirmDialog(null, "Deseja realmente desligar o funcionário ID: "
                                 + idFuncionario + "?", "Confirmação", JOptionPane.YES_NO_OPTION);
 
                         if (confirm == JOptionPane.YES_OPTION) {
                             funcionario.desligarFuncionario();
-                            JOptionPane.showMessageDialog(frame, "Funcionário desligado com sucesso!");
+                            JOptionPane.showMessageDialog(null, "Funcionário desligado com sucesso!");
                         }
                     }
                 }
             } else {
-                JOptionPane.showMessageDialog(frame, "ID do funcionário não pode ser vazio.",
+                JOptionPane.showMessageDialog(null, "ID do funcionário não pode ser vazio.",
                         "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         buttonAdicionarProduto.addActionListener(e -> {
-            String nomeProduto = JOptionPane.showInputDialog(frame, "Digite o nome do produto:");
-            String idProduto = JOptionPane.showInputDialog(frame, "Digite o ID do produto:");
-            String precoProdutoStr = JOptionPane.showInputDialog(frame, "Digite o preço do produto:");
-            String categoriaProduto = JOptionPane.showInputDialog(frame, "Digite a categoria do produto:");
-            String descricaoProduto = JOptionPane.showInputDialog(frame, "Digite a descrição do produto:");
+            String nomeProduto = JOptionPane.showInputDialog(null, "Digite o nome do produto:");
+            String idProduto = JOptionPane.showInputDialog(null, "Digite o ID do produto:");
+            String precoProdutoStr = JOptionPane.showInputDialog(null, "Digite o preço do produto:");
+            String categoriaProduto = JOptionPane.showInputDialog(null, "Digite a categoria do produto:");
+            String descricaoProduto = JOptionPane.showInputDialog(null, "Digite a descrição do produto:");
 
             // Validação e conversão do preço
             try {
@@ -228,29 +195,29 @@ public class ControleModoGrafico extends Modelos {
                     // Cria e adiciona o produto
                     Produto produto = new Produto();
                     produto.adicionarProduto(nomeProduto, idProduto, precoProduto, categoriaProduto, descricaoProduto, 0);
-                    addProduto(produto);
+                    model.addProduto(produto);
 
-                    JOptionPane.showMessageDialog(frame, "Produto adicionado com sucesso!");
+                    JOptionPane.showMessageDialog(null, "Produto adicionado com sucesso!");
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Preencha todos os campos corretamente.",
+                    JOptionPane.showMessageDialog(null, "Preencha todos os campos corretamente.",
                             "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Preço inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Preço inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         buttonAlterarEstoque.addActionListener(e -> {
-            String idProduto = JOptionPane.showInputDialog(frame, "Digite o ID do produto para alterar o estoque:");
-            String quantidadeStr = JOptionPane.showInputDialog(frame, "Digite a quantidade a ser removida do estoque:");
+            String idProduto = JOptionPane.showInputDialog(null, "Digite o ID do produto para alterar o estoque:");
+            String quantidadeStr = JOptionPane.showInputDialog(null, "Digite a quantidade a ser removida do estoque:");
 
             try {
                 int quantidade = Integer.parseInt(quantidadeStr);
 
-                for(Produto produto : produtos){
+                for(Produto produto : model.getProdutos()){
                     if(idProduto.equals(produto.getId())){
                         produto.alterarEstoque(quantidade);
-                        JOptionPane.showMessageDialog(frame, "Estoque alterado com sucesso!");
+                        JOptionPane.showMessageDialog(null, "Estoque alterado com sucesso!");
                     }
                 }
                 if (quantidade >= 0 && !idProduto.trim().isEmpty()) {
@@ -260,11 +227,11 @@ public class ControleModoGrafico extends Modelos {
 
 
                 } else {
-                    JOptionPane.showMessageDialog(frame, "Preencha os campos corretamente.",
+                    JOptionPane.showMessageDialog(null, "Preencha os campos corretamente.",
                             "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame, "Quantidade inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Quantidade inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -277,7 +244,7 @@ public class ControleModoGrafico extends Modelos {
             boolean resultadoDisponibilidade = false, naoEncontrado = true;
 
             if (nomeProduto != null && !nomeProduto.trim().isEmpty()) {
-                for(Pedido pedido : pedidos){
+                for(Pedido pedido : model.getPedidos()){
                     if(nomeProduto.equals(pedido.getNomePedido())){
                         resultadoDisponibilidade = pedido.verificarDisponibilidade();
                         naoEncontrado = false;
@@ -310,7 +277,7 @@ public class ControleModoGrafico extends Modelos {
                     !dataEntrega.trim().isEmpty() && !descricao.trim().isEmpty()) {
                 Pedido novoPedido = new Pedido();
                 novoPedido.criarPedido(nomePedido, idPedido, dataPedido, dataEntrega, "produtos", descricao);
-                addPedido(novoPedido);
+                model.addPedido(novoPedido);
                 JOptionPane.showMessageDialog(null, "Pedido realizado com sucesso!",
                         "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -323,7 +290,7 @@ public class ControleModoGrafico extends Modelos {
             String IdPedido = JOptionPane.showInputDialog("Digite o id do pedido a ser encerrado:");
             if (IdPedido != null && !IdPedido.trim().isEmpty()) {
                 boolean naoEncontrado = true;
-                for(Pedido pedido : pedidos){
+                for(Pedido pedido : model.getPedidos()){
                     if(pedido.getIdPedido().equals(IdPedido)){
                         JOptionPane.showMessageDialog(null, "Pedido encerrado com sucesso!",
                                 "Encerrar Pedido", JOptionPane.INFORMATION_MESSAGE);
@@ -346,7 +313,7 @@ public class ControleModoGrafico extends Modelos {
 
             if (IdPedido != null && novaDescricao != null && !IdPedido.trim().isEmpty()
                     && !novaDescricao.trim().isEmpty()) {
-                for(Pedido pedido : pedidos){
+                for(Pedido pedido : model.getPedidos()){
                     if(pedido.getIdPedido().equals(IdPedido)){
                         pedido.setDescricao(novaDescricao);
                         pedido.alterarPedido();
@@ -362,11 +329,12 @@ public class ControleModoGrafico extends Modelos {
         });
     }
 
-    private void atualizarDB(){
-        conector.getConnection();
-        funcionarios = conector.SelectFuncionarios();
-        pedidos = conector.SelectPedidos();
-        produtos = conector.SelectProdutos();
-        usuarios = conector.SelectLogin();
+    private void criarTabelas() {
+        frame.TabelaFuncionario(model.pegarTabelaFuncionarios());
+        frame.TabelaEmpresa(model.pegarTabelaEmpresas());
+        frame.TabelaEstoque(model.pegarTabelaEstoque());
+        frame.TabelaLogin(model.pegarTabelaLogins());
+        frame.TabelaPedido(model.pegarTabelaPedidos());
+        frame.TabelaProduto(model.pegarTabelaProdutos());
     }
 }

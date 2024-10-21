@@ -132,6 +132,7 @@ import model.identificadores.Login;
             constraints.gridx = 1;
             textSenha = new JPasswordField(20);
             panel.add(textSenha, constraints);
+            textSenha.setEchoChar('*');
             textSenha.putClientProperty("JComponent.roundRect", true);
 
             constraints.gridx = 0;
@@ -262,6 +263,11 @@ import model.identificadores.Login;
             return menuBar;
         }
 
+        public void limparCaixasLogin(){
+            textSenha.setText("");
+            textUsuario.setText("");
+        }
+
         //getters and setters
 
 
@@ -311,6 +317,10 @@ import model.identificadores.Login;
 
         public void setTextSenha(JPasswordField textSenha) {
             this.textSenha = textSenha;
+        }
+
+        public boolean getStatusCheckBoxLembrar() {
+            return checkBoxLembrar.isSelected();
         }
 
         // Painel personalizado para aplicar o fundo degradê

@@ -2,7 +2,6 @@ package view.ModoGrafico;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
-import model.ConectorDB;
 import model.identificadores.DadosTabela;
 
 import javax.swing.*;
@@ -11,7 +10,6 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.util.Vector;
 
 public class FramePrincipal {
     private JFrame frame;
@@ -657,11 +655,11 @@ public class FramePrincipal {
         return frame;
     }
 
-    public JPanel getPainelLogin() {
+    public TelaLogin getPainelLogin() {
         return painelLogin;
     }
 
-    public JPanel getPainelPrograma() {
+    public TelaPrograma getPainelPrograma() {
         return painelPrograma;
     }
 

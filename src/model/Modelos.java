@@ -1,8 +1,5 @@
 package model;
-import model.identificadores.Funcionario;
-import model.identificadores.Login;
-import model.identificadores.Pedido;
-import model.identificadores.Produto;
+import model.identificadores.*;
 import model.ConectorDB;
 import java.util.ArrayList;
 
@@ -11,8 +8,12 @@ public class Modelos {
     private ArrayList<Pedido> pedidos = new ArrayList<>();
     private ArrayList<Produto> produtos = new ArrayList<>();
     private ArrayList<Login> usuarios = new ArrayList<>();
+    private ConectorDB conector = new ConectorDB();
 
-    ConectorDB conector = new ConectorDB();
+    public Modelos(){
+        conector.getConnection();
+        atualizarUsandoDB();
+    }
 
     public ArrayList<Funcionario> getFuncionarios() {
         return funcionarios;
@@ -62,8 +63,26 @@ public class Modelos {
         usuarios.add(usuario);
     }
 
+    public DadosTabela pegarTabelaFuncionarios(){
+        return conector.TabelaFuncionarios();
+    }
+    public DadosTabela pegarTabelaEmpresas(){
+        return conector.TabelaEmpresa();
+    }
+    public DadosTabela pegarTabelaEstoque(){
+        return conector.TabelaEstoque();
+    }
+    public DadosTabela pegarTabelaLogins(){
+        return conector.TabelaLogin();
+    }
+    public DadosTabela pegarTabelaPedidos(){
+        return conector.TabelaPedido();
+    }
+    public DadosTabela pegarTabelaProdutos(){
+        return conector.TabelaProduto();
+    }
+
     private void atualizarUsandoDB(){
-        conector.getConnection();
         funcionarios = conector.SelectFuncionarios();
         pedidos = conector.SelectPedidos();
         produtos = conector.SelectProdutos();
