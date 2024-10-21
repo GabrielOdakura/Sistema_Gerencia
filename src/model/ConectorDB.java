@@ -17,7 +17,7 @@ public class ConectorDB {
     public void getConnection() {
         String url = "jdbc:mysql://localhost:3306/Gestão-Produtos";
         String usuario = "root";
-        String senha = "1234";
+        String senha = "Louco123@";
 
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -378,6 +378,71 @@ public class ConectorDB {
             e.printStackTrace();
         }
         return new DadosTabela(vectorDados,vectorNomeColunas);
+    }
+
+    //inserts
+    public void inserirEmpresa(int empresaId, String empresaNome) {
+        String sql = "Insert into `gestão-produtos`.`empresa`(`Empresa_id`,`Empresa_nome`) VALUES (" + empresaId + ",'" + empresaNome + "');";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Empresa Inserida (id): " + empresaId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserirFuncionarios(int funcionarioId, String funcionarioNome, String funcionarioCargo) {
+        String sql = "Insert into `gestão-produtos`.`funcionarios`(`Funcionarios_id`,`Funcionarios_nome`,`Funcionarios_tempoAcesso`,`Funcionarios_cargo`) VALUES (" + funcionarioId + ",'" + funcionarioNome + "',CURDATE(),'" + funcionarioCargo + "');";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Funcionario inserido (id): " + funcionarioId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserirLogin(String senha, String usuario, int idFuncionario) {
+        String sql = "Insert into `gestão-produtos`.`login`(`Login_senha`,`Login_Usuario`,`Funcionarios_Funcionarios_id`) VALUES " +
+                "('" + senha + "','" + usuario + "'," + idFuncionario + ");";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Acesso Login inserido: " + usuario);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserirProdutos(String nomeProduto, Double precoProduto, String categoriaProduto, String descricaoProduto, int desconto) {
+        String sql = "Insert into `gestão-produtos`.`produtos`(`Produtos_nome`,`Produtos_preco`,`Produtos_categoria`,`Produtos_descricao`,`Produtos_desconto`) VALUES " +
+                "('" + nomeProduto + "'," + precoProduto + ",'" + categoriaProduto +"'," + descricaoProduto + "," + desconto + ");";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Produto Inserido: " + nomeProduto);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserirPedidos(String descricaoPedido, int empresaId, int produtoId, int funcionarioId) {
+        String sql = "gestão-produtos`.`pedidos`(`Pedidos_dataInicial`,`Pedidos_dataEntrega`,`Pedidos_descricao`,`Empresa_Empresa_id`,`Produtos_Produtos_id`, `Funcionarios_Funcionarios_id`) VALUES" +
+                " (CURDATE(),CURDATE(),'" + descricaoPedido +"'," + empresaId + "," + produtoId + "," + funcionarioId + ");";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Pedido inserido com sucesso!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserirEstoque(int estoque, int produtoId) {
+        String sql = "Insert into `gestão-produtos`.`estoque`(`estoque_total`,`estoque_disponivel`,`Produtos_Produtos_id`) VALUES" +
+                " (" + estoque + "," + estoque + "," + produtoId + ");";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Estoque Inserido (id do produto): " + produtoId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
    /*
    public static ArrayList<Empresa> InsertEmpresa(){

@@ -89,4 +89,28 @@ public class Modelos {
         usuarios = conector.SelectLogin();
     }
 
+    public void inserirEmpresa(String empresaNome){
+//        conector.inserirEmpresa();
+    }
+
+    public void inserirFuncionarios(String funcionarioNome, String funcionarioCargo){
+        conector.inserirFuncionarios(funcionarios.size() + 1, funcionarioNome, funcionarioCargo);
+    }
+
+    public void inserirLogin(String senha, String usuario){
+        conector.inserirLogin(senha,usuario, funcionarios.size() + 1);
+    }
+
+    public void inserirProdutos(String nomeProduto, Double precoProduto, String categoriaProduto, String descricaoProduto, int desconto){
+        conector.inserirProdutos(nomeProduto,precoProduto,categoriaProduto,descricaoProduto,desconto);
+    }
+
+    public void inserirPedidos(String descricaoPedido, int empresaId, int produtoId, int funcionarioId){
+        conector.inserirPedidos(descricaoPedido, empresaId, produtoId, funcionarioId);
+    }
+
+    public void inserirEstoque(int estoque, int produtoId){
+        conector.inserirEstoque(estoque, produtoId);
+    }
+
 }
