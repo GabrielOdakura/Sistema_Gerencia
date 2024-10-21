@@ -2,6 +2,7 @@ package model;
 
 import model.identificadores.*;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -28,6 +29,8 @@ public class ConectorDB {
 
         } catch (SQLException e) {
             System.out.println("Erro estabelecendo conexão com a database: " + e.getMessage());
+            JOptionPane.showMessageDialog(null,"Não foi possível conectar ao BD, o programa será fechado!");
+            System.exit(0);
         } catch (ClassNotFoundException e) {
             System.out.println("Driver MySql não foi encontrado: " + e.getMessage());
         }
