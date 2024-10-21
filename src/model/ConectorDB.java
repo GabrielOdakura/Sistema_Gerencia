@@ -379,14 +379,27 @@ public class ConectorDB {
         }
         return new DadosTabela(vectorDados,vectorNomeColunas);
     }
+    //Exemplo de Insert
+    public void InserirAlunos(int Alunos_ra, String Alunos_nome) {
+        String sql = "INSERT INTO alunos (Alunos_ra, Alunos_nome) VALUES (" + Alunos_ra + ",'" + Alunos_nome + "');";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.executeUpdate();
+            System.out.println("Aluno Inserido: " + Alunos_ra);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
    /*
    public static ArrayList<Empresa> InsertEmpresa(){
         String insertQuery = "Insert into `gestão-produtos`.`empresa`(`Empresa_id`,`Empresa_nome`) VALUES (\"1\",\"TechNova Solutions\"),(\"2\",\"GreenWave Industries\"),(\"3\",\"BlueSky Innovations\"),(\"4\",\"UrbanVista Architects\"),(\"5\",\"NextGen Dynamics\"),(\"6\",\"BrightFuture Investments\"),(\"7\",\"QuantumLeap Technologies\"),(\"8\",\"EcoSphere Enterprises\"),(\"9\",\"FutureLink Networks\"),(\"10\",\"Pinnacle Global\"),(\"11\",\"VistaCore Technologies\"),(\"12\",\"SilverLining Cloud Services\"),(\"13\",\"Zenith Financial Group\"),(\"14\",\"Harmony Wellness Solutions\"),(\"15\",\"AeroFlex Logistics\"),(\"16\",\"Solaris Energy Group\"),(\"17\",\"CrystalWave Technologies\"),(\"18\",\"NovaTerra Real Estate\"),(\"19\",\"PrimePath Consulting\"),(\"20\",\"InnovaTech Labs\");\n";
 
-        try(Connection conn = ConectorDB.getConnection();
-            PreparedStatement stmt = conn.prepareCall(insertQuery)){
-
-            stmt.setString(1,"New Name");
+        try{
+            Connection conn = ConectorDB.getConnection();
+            PreparedStatement pstmt = conn.prepareCall(insertQuery))
+            pstmt.setString(1,"New Name");
             int rowsAffected = stmt.executeUpdate();
             System.out.println("Affected Rows: "+ rowsAffected);
 
