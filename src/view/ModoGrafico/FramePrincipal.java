@@ -6,16 +6,20 @@ import model.identificadores.DadosTabela;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
 
 public class FramePrincipal {
     private JFrame frame;
     private TelaLogin painelLogin;
     private TelaPrograma painelPrograma;
     private JLayeredPane painelPrincipal;
+    private ArrayList<JTable> listaTabelas = new ArrayList<>();
+    private ArrayList<JScrollPane> listaScrollPanes = new ArrayList<>();
 
     public FramePrincipal(){
 
@@ -116,6 +120,93 @@ public class FramePrincipal {
         ajuda.addActionListener(e ->
                 JOptionPane.showMessageDialog(null, "Sistema de Gerenciamento de Inventário\n" +
                         "Versão 1.0", "Sobre", JOptionPane.INFORMATION_MESSAGE));
+    }
+
+    public void gerarTabela(DadosTabela retorno, String nomeTabela){
+        // Obtenção do JTabbedPane e inicialização da tabela
+        JTabbedPane tabbedPane = painelPrograma.getTabbedPane();
+        JTable tabela = painelPrograma.atualizarTabelaFuncionarios(retorno.vectorDados, retorno.vectorNomeColunas);
+        listaTabelas.add(tabela);
+
+        // Configurações gerais da tabela (renderização, rolagem e bordas)
+        tabela.putClientProperty("JTable.cellRenderer", true);
+        tabela.putClientProperty("JTable.alternateRowColor", true);
+        tabela.putClientProperty(FlatClientProperties.COMPONENT_ROUND_RECT, true); // Bordas arredondadas
+        tabela.putClientProperty(FlatClientProperties.SCROLL_PANE_SMOOTH_SCROLLING, true); // Rolagem suave
+        tabela.putClientProperty(FlatClientProperties.SCROLL_BAR_SHOW_BUTTONS, true); // Botões visíveis nas barras de rolagem
+
+        // Configurações de redimensionamento
+        tabela.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS); // Colunas se ajustam automaticamente
+
+        // Estilo de seleção e cursor
+        tabela.setSelectionBackground(new Color(100, 149, 237)); // Cor de fundo na seleção
+        tabela.setSelectionForeground(Color.BLACK); // Cor da fonte na seleção
+        tabela.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cursor muda para "mão"
+
+        // Ajustes de fonte e layout de células
+        tabela.setFont(new Font("Arial", Font.PLAIN, 12)); // Fonte da tabela
+        tabela.setShowGrid(true); // Exibe grade
+        tabela.setGridColor(Color.GRAY); // Cor da grade
+        tabela.setShowHorizontalLines(true); // Linhas horizontais visíveis
+        tabela.setShowVerticalLines(true); // Linhas verticais visíveis
+
+        // Customização do JScrollPane (envolvendo a tabela)
+        JScrollPane scrollPane = new JScrollPane(tabela);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(192, 192, 192), 1)); // Borda do JScrollPane
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Margem interna do viewport
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); // Barra horizontal sob demanda
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Barra vertical sob demanda
+
+        listaScrollPanes.add(scrollPane);
+
+        // Customização do cabeçalho da tabela
+        JTableHeader header = tabela.getTableHeader();
+        header.setFont(new Font("Arial", Font.PLAIN, 12)); // Fonte do cabeçalho
+        header.setBackground(Color.GRAY); // Cor de fundo do cabeçalho
+        header.setForeground(Color.WHITE); // Cor da fonte do cabeçalho
+
+        // Configuração do layout do painel que contém a tabela
+        JPanel painelTeste = new JPanel(new BorderLayout());
+        painelTeste.add(scrollPane, BorderLayout.CENTER); // Adiciona o JScrollPane no centro do painel
+
+        // Adiciona a nova aba ao JTabbedPane
+        tabbedPane.addTab(nomeTabela, painelTeste);
+        tabbedPane.revalidate(); // Revalida o layout do tabbedPane
+        tabbedPane.repaint(); // Reaplica as configurações visuais
+
+        // Renderização personalizada das células (alinhamento e cores alternadas)
+        tabela.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(
+                    JTable table, Object value, boolean isSelected, boolean hasFocus,
+                    int row, int column) {
+
+                JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                label.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Margens internas
+                label.setHorizontalAlignment(SwingConstants.CENTER); // Alinhamento central
+
+                if (!isSelected) {
+                    // Alterna a cor das linhas (cinza claro e branco)
+                    label.setBackground(row % 2 == 0 ? new Color(245, 245, 245) : Color.LIGHT_GRAY);
+                }
+                return label;
+            }
+        });
+
+        // Exibição de tooltips nas células ao passar o mouse
+        tabela.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int row = tabela.rowAtPoint(e.getPoint());
+                int col = tabela.columnAtPoint(e.getPoint());
+                if (row > -1 && col > -1) {
+                    Object value = tabela.getValueAt(row, col);
+                    if (value != null) {
+                        tabela.setToolTipText(value.toString()); // Exibe o conteúdo como tooltip
+                    }
+                }
+            }
+        });
     }
 
     public void TabelaFuncionario(DadosTabela retorno) {
@@ -620,6 +711,20 @@ public class FramePrincipal {
                 }
             }
         });
+    }
+
+    public void atualizarTabela(DadosTabela dados, int indTabela) {
+        DefaultTableModel modeloTabela = new DefaultTableModel(dados.vectorDados, dados.vectorNomeColunas);
+        var tabela = listaTabelas.get(indTabela);
+
+        tabela.setModel(modeloTabela);
+
+        var scrollPane = listaScrollPanes.get(indTabela);
+
+        tabela.revalidate();
+        scrollPane.revalidate();
+        tabela.repaint();
+        scrollPane.repaint(); // Also repaint the scroll pane
     }
 
     private void ajustarComponentes(JTable tabela, JScrollPane scrollPane) {

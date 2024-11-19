@@ -16,6 +16,7 @@ public class ControleModoGrafico extends Modelos {
     private TelaPrograma telaPrograma;
     private Modelos model;
     private FramePrincipal frame;
+    private ThreadCaller caller = new ThreadCaller();
 
     public ControleModoGrafico(){
         model = new Modelos();
@@ -32,8 +33,6 @@ public class ControleModoGrafico extends Modelos {
                 criarTabelas();
             }
         });
-        
-
     }
 
 
@@ -58,6 +57,7 @@ public class ControleModoGrafico extends Modelos {
                         JOptionPane.showMessageDialog(null, "Login realizado com sucesso!",
                                 "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                         naoEncontrado = false;
+                        caller.start();
                         if(!frame.getPainelLogin().getStatusCheckBoxLembrar()) frame.getPainelLogin().limparCaixasLogin();
                         frame.getPainelPrincipal().setLayer(frame.getPainelLogin(), JLayeredPane.DEFAULT_LAYER);
                         frame.getPainelPrincipal().setLayer(frame.getPainelPrograma(), JLayeredPane.PALETTE_LAYER);
@@ -123,6 +123,7 @@ public class ControleModoGrafico extends Modelos {
                 Funcionario funcionario = new Funcionario();
                 funcionario.cadastrarFuncionario(nomeFuncionario, cargoFuncionario, "DataAtual", idFuncionario);
                 model.addFuncionario(funcionario);
+                model.inserirFuncionarios(funcionario.getNomeFuncionario(),funcionario.getCargo());
 
                 // Exibe mensagem de sucesso
                 JOptionPane.showMessageDialog(null, "Funcionário cadastrado com sucesso!");
@@ -330,11 +331,38 @@ public class ControleModoGrafico extends Modelos {
     }
 
     private void criarTabelas() {
-        frame.TabelaFuncionario(model.pegarTabelaFuncionarios());
-        frame.TabelaEmpresa(model.pegarTabelaEmpresas());
-        frame.TabelaEstoque(model.pegarTabelaEstoque());
-        frame.TabelaLogin(model.pegarTabelaLogins());
-        frame.TabelaPedido(model.pegarTabelaPedidos());
-        frame.TabelaProduto(model.pegarTabelaProdutos());
+        frame.gerarTabela(model.pegarTabelaFuncionarios(),"Funcionarios");
+        frame.gerarTabela(model.pegarTabelaEmpresas(), "Empresas");
+        frame.gerarTabela(model.pegarTabelaEstoque(), "Estoque");
+        frame.gerarTabela(model.pegarTabelaLogins(), "Login");
+        frame.gerarTabela(model.pegarTabelaPedidos(), "Pedidos");
+        frame.gerarTabela(model.pegarTabelaProdutos(),"Produtos");
+    }
+
+    private class ThreadCaller extends Thread{
+        @Override
+        public void run(){
+            while(true){
+                for(int i = 0; i < 6; i++){
+                    switch (i){
+                        case 0 -> frame.atualizarTabela(model.pegarTabelaFuncionarios(), i);
+                        case 1 -> frame.atualizarTabela(model.pegarTabelaEmpresas(), i);
+                        case 2 -> frame.atualizarTabela(model.pegarTabelaEstoque(), i);
+                        case 3 -> frame.atualizarTabela(model.pegarTabelaLogins(), i);
+                        case 4 -> frame.atualizarTabela(model.pegarTabelaPedidos(), i);
+                        case 5 -> frame.atualizarTabela(model.pegarTabelaProdutos(), i);
+                    }
+                }
+                sleep(5000);
+            }
+        }
+
+        private void sleep(int milli){
+            try{
+                Thread.sleep(milli);
+            }catch (InterruptedException e){
+
+            }
+        }
     }
 }

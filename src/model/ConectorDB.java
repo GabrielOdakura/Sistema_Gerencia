@@ -17,7 +17,7 @@ public class ConectorDB {
     public void getConnection() {
         String url = "jdbc:mysql://localhost:3306/Gestão-Produtos";
         String usuario = "root";
-        String senha = "Louco123@";
+        String senha = "root";
 
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
